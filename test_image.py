@@ -31,8 +31,11 @@ def load_model(dataset_name):
 
 def image_fusion(IR_Net_model, Fusion_Net_model, real_rgb_imgs, real_ir_imgs, rgb_hist, ir_hist):
     is_test = True
-    _, _, _, feature3_1, feature3_2, feature3_3, feature2_1, feature2_2, feature2_3, feature1_1, feature1_2, feature1_3 = IR_Net_model(real_rgb_imgs,real_ir_imgs)
-    _, _, fusion_imgs = Fusion_Net_model(feature3_1, feature3_2, feature3_3, feature2_1, feature2_2, feature2_3, feature1_1, feature1_2, feature1_3, real_rgb_imgs, real_ir_imgs, rgb_hist, ir_hist,is_test)
+    _, _, _, feature3_1, feature3_2, feature3_3, feature2_1, feature2_2, feature2_3, feature1_1, feature1_2, feature1_3 = IR_Net_model(
+        real_rgb_imgs, real_ir_imgs)
+    _, _, fusion_imgs = Fusion_Net_model(feature3_1, feature3_2, feature3_3, feature2_1, feature2_2, feature2_3,
+                                         feature1_1, feature1_2, feature1_3, real_rgb_imgs, real_ir_imgs, rgb_hist,
+                                         ir_hist, is_test)
 
     return fusion_imgs
 

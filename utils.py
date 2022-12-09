@@ -66,6 +66,7 @@ class Customdataset_with_hist(Dataset):
     def __len__(self):
         return len(self.image_rgb_paths)
 
+
 def get_test_images(paths, height=None, width=None):
     ImageToTensor = transforms.Compose([
         transforms.ToTensor(),

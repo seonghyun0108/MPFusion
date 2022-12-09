@@ -6,19 +6,16 @@ import pytorch_ssim
 from torch.utils.data import DataLoader
 
 from utils import Customdataset, Customdataset_with_hist
-from losses import Per_loss, Cos_loss, Spa_loss
+from losses import Per_loss, Spa_loss
 from model import IR_Net, Fusion_Net
 from IR_train import ir_train
 from Fus_train import fus_train
 
 
 def main():
-
     parser = argparse.ArgumentParser()
-    parser.add_argument('--rgb_dataset', type=str, default='/home/seonghyun/visible_20000_/visible_20000/',
-                        help='path of rgb dataset')
-    parser.add_argument('--ir_dataset', type=str, default='/home/seonghyun/lwir_20000_/lwir_20000/',
-                        help='path of ir dataset')
+    parser.add_argument('--rgb_dataset', type=str, default='', help='path of rgb dataset')
+    parser.add_argument('--ir_dataset', type=str, default='', help='path of ir dataset')
     parser.add_argument('--test_images', type=str, default='test_images', help='path of image visualization')
     parser.add_argument('--train_mode', type=int, default=1, help='train mode: 1(IRNet) 2(FusionNet)')
     parser.add_argument('--sample_interval', type=int, default=1000, help='interval of saving image')
@@ -72,7 +69,8 @@ def main():
             IR_Net_model.train()
             ir_optim = torch.optim.Adam(IR_Net_model.parameters(), lr=args.lr, betas=(args.b1, args.b2), eps=1e-8,
                                         weight_decay=1e-8)
-            ir_train(IR_Net_model, ir_optim, MSE_loss, SSIM_loss, ir_dataloader, args.epochs, args.sample_interval, args.checkpoint_interval, args.dataset_name)
+            ir_train(IR_Net_model, ir_optim, MSE_loss, SSIM_loss, ir_dataloader, args.batch_size, args.epochs, args.sample_interval,
+                     args.checkpoint_interval, args.dataset_name)
 
 
     else:
@@ -89,20 +87,19 @@ def main():
         # Loss & Optimizer
         # -------------------
 
-        loss_cos = Cos_loss()
         loss_p = Per_loss()
         loss_spa = Spa_loss()
 
         if cuda:
             torch.cuda.set_device('cuda:0')
 
-            IR_Net_model = torch.nn.DataParallel(IR_Net(), device_ids=[0,1,2,3])
+            IR_Net_model = torch.nn.DataParallel(IR_Net(), device_ids=[0])
             IR_Net_model.load_state_dict(
-                torch.load("saved_models/%s/IR_Net_model_%d.pth" % (args.dataset_name, 15000)))
+                torch.load("saved_models/%s/IR_Net_model_%d.pth" % (args.dataset_name, 0)))
             IR_Net_model.cuda()
             IR_Net_model.eval()
 
-            Fusion_Net_model = torch.nn.DataParallel(Fusion_Net(), device_ids=[0,1,2,3])
+            Fusion_Net_model = torch.nn.DataParallel(Fusion_Net(), device_ids=[0])
             Fusion_Net_model.cuda()
             Fusion_Net_model.train()
             fus_optim = torch.optim.Adam(Fusion_Net_model.parameters(), lr=args.lr, betas=(args.b1, args.b2), eps=1e-8,
@@ -116,8 +113,8 @@ def main():
             print('# of params : %d' % num_params)
 
             fus_train(IR_Net_model, Fusion_Net_model, fus_optim, MSE_loss, loss_spa, loss_p, fus_dataloader,
-                      args.epochs, args.sample_interval, args.checkpoint_interval, args.dataset_name)
+                      args.batch_size, args.epochs, args.sample_interval, args.checkpoint_interval, args.dataset_name)
+
 
 if __name__ == '__main__':
-
     main()

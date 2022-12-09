@@ -1,25 +1,7 @@
 import torch
 import torch.nn as nn
 import torch.nn.functional as F
-from torch import Tensor
 from torchvision.models.vgg import vgg16
-
-
-class Cos_loss(nn.Module):
-    __constants__ = ['dim', 'eps']
-    dim: int
-    eps: float
-
-    def __init__(self, dim: int = 1, eps: float = 1e-8) -> None:
-        super(Cos_loss, self).__init__()
-        self.dim = dim
-        self.eps = eps
-
-    def forward(self, x1: Tensor, x2: Tensor) -> Tensor:
-        cos = torch.nn.CosineSimilarity(dim=1)
-        loss_cos = torch.mean(1 - cos(x1, x2))
-
-        return loss_cos
 
 
 class Per_loss(torch.nn.Module):

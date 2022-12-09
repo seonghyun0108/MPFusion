@@ -14,7 +14,8 @@ def step(self, epoch):
     return 1.0 - max(0, epoch + self.offset - self.decay_start_epoch) / (self.n_epochs - self.decay_start_epoch)
 
 
-def fus_train(IR_Net_model, Fusion_Net_model, fus_optim, MSE_loss, Spa_loss, per_loss, fus_dataloader, epochs, sample_interval, checkpoint_interval, dataset_name):
+def fus_train(IR_Net_model, Fusion_Net_model, fus_optim, MSE_loss, Spa_loss, per_loss, fus_dataloader, batch_size, epochs,
+              sample_interval, checkpoint_interval, dataset_name):
     cuda = True if torch.cuda.is_available() else False
 
     Tensor = torch.cuda.FloatTensor if cuda else torch.FloatTensor
@@ -50,16 +51,16 @@ def fus_train(IR_Net_model, Fusion_Net_model, fus_optim, MSE_loss, Spa_loss, per
                 real_rgb_imgs,
                 real_ir_imgs)
             fusion_imgs3, fusion_imgs2, fusion_imgs1 = Fusion_Net_model(feature3_1, feature3_2, feature3_3,
-                                                                              feature2_1, feature2_2, feature2_3,
-                                                                              feature1_1, feature1_2, feature1_3,
-                                                                              real_rgb_imgs,
-                                                                              real_ir_imgs, rgb_hist, ir_hist,
-                                                                              is_test)
+                                                                        feature2_1, feature2_2, feature2_3,
+                                                                        feature1_1, feature1_2, feature1_3,
+                                                                        real_rgb_imgs,
+                                                                        real_ir_imgs, rgb_hist, ir_hist,
+                                                                        is_test)
 
             # -------------
             # total_loss
             # -------------
-            
+
             mse_loss = MSE_loss(input=fusion_imgs3, target=real_rgb_imgs_3) \
                        + MSE_loss(input=fusion_imgs3, target=real_ir_imgs_3) \
                        + MSE_loss(input=fusion_imgs2, target=real_rgb_imgs_2) \
@@ -109,11 +110,11 @@ def fus_train(IR_Net_model, Fusion_Net_model, fus_optim, MSE_loss, Spa_loss, per
             # -----------------------
 
             if batches_done % sample_interval == 0:
-                save_image(fusion_imgs1.data[:16], "train_images/fake_%d.png" % batches_done, nrow=4, normalize=True)
-                save_image(ir_imgs1.data[:16], "train_images/ir_fake_%d.png" % batches_done, nrow=4,
+                save_image(fusion_imgs1.data[:batch_size], "train_images/fake_%d.png" % batches_done, nrow=4, normalize=True)
+                save_image(ir_imgs1.data[:batch_size], "train_images/ir_fake_%d.png" % batches_done, nrow=4,
                            normalize=True)
-                save_image(real_ir_imgs.data[:16], "train_images/ir_real_%d.png" % batches_done, nrow=4, normalize=True)
-                save_image(real_rgb_imgs.data[:16], "train_images/real_rgb_%d.png" % batches_done, nrow=4,
+                save_image(real_ir_imgs.data[:batch_size], "train_images/ir_real_%d.png" % batches_done, nrow=4, normalize=True)
+                save_image(real_rgb_imgs.data[:batch_size], "train_images/real_rgb_%d.png" % batches_done, nrow=4,
                            normalize=True)
 
             # -------------------------

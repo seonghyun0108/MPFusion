@@ -14,8 +14,8 @@ def step(self, epoch):
     return 1.0 - max(0, epoch + self.offset - self.decay_start_epoch) / (self.n_epochs - self.decay_start_epoch)
 
 
-def ir_train(IR_Net_model, ir_optim, MSE_loss, SSIM_loss, dataloader, epochs, sample_interval, checkpoint_interval, dataset_name):
-
+def ir_train(IR_Net_model, ir_optim, MSE_loss, SSIM_loss, dataloader, batch_size, epochs, sample_interval, checkpoint_interval,
+             dataset_name):
     cuda = True if torch.cuda.is_available() else False
     Tensor = torch.cuda.FloatTensor if cuda else torch.FloatTensor
 
@@ -37,7 +37,8 @@ def ir_train(IR_Net_model, ir_optim, MSE_loss, SSIM_loss, dataloader, epochs, sa
             # train IR_Net
             # ---------------
 
-            ir_fake_imgs3, ir_fake_imgs2, ir_fake_imgs1, _, _, _, _, _, _, _, _, _ = IR_Net_model(real_rgb_imgs, real_ir_imgs)
+            ir_fake_imgs3, ir_fake_imgs2, ir_fake_imgs1, _, _, _, _, _, _, _, _, _ = IR_Net_model(real_rgb_imgs,
+                                                                                                  real_ir_imgs)
 
             # -------------
             # total_loss
@@ -81,13 +82,13 @@ def ir_train(IR_Net_model, ir_optim, MSE_loss, SSIM_loss, dataloader, epochs, sa
             # -----------------------
 
             if batches_done % sample_interval == 0:
-                save_image(ir_fake_imgs1.data[:16], "train_images/ir_fake1_%d.png" % batches_done, nrow=4,
+                save_image(ir_fake_imgs1.data[:batch_size], "train_images/ir_fake1_%d.png" % batches_done, nrow=4,
                            normalize=True)
-                save_image(ir_fake_imgs2.data[:16], "train_images/ir_fake2_%d.png" % batches_done, nrow=4,
+                save_image(ir_fake_imgs2.data[:batch_size], "train_images/ir_fake2_%d.png" % batches_done, nrow=4,
                            normalize=True)
-                save_image(ir_fake_imgs3.data[:16], "train_images/ir_fake3_%d.png" % batches_done, nrow=4,
+                save_image(ir_fake_imgs3.data[:batch_size], "train_images/ir_fake3_%d.png" % batches_done, nrow=4,
                            normalize=True)
-                save_image(real_ir_imgs.data[:16], "train_images/ir_real_%d.png" % batches_done, nrow=4,
+                save_image(real_ir_imgs.data[:batch_size], "train_images/ir_real_%d.png" % batches_done, nrow=4,
                            normalize=True)
 
             # -------------------------
