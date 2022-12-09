@@ -4,7 +4,7 @@
 Official pytorch implementation for **"Multiscale Progressive Fusion of Infrared and Visible Images"**
 
 <p float="left">
-  &emsp;&emsp; <img src="/figs/overview.png" width="800" />
+  &emsp;&emsp; <img src="figs/overview.png" width="640" />
 </p>
 
 ## Preparation
