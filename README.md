@@ -26,7 +26,7 @@ If you find this work useful for your research, please consider citing our paper
     author={Park, Seonghyun and Lee, Chul},
     booktitle={IEEE Access},
     title={Multiscale Progressive Fusion of Infrared and Visible Images}, 
-    year={2022},xx
+    year={2022},
     volume={10},
     number={},
     pages={126117-126132},
