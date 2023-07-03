@@ -8,7 +8,7 @@ Official pytorch implementation for **"Multiscale Progressive Fusion of Infrared
 </p>
 
 ## Preparation
-### Testing samples: [Download from GoogleDrive](https://drive.google.com/file/d/18FyyS-DUhDj4knvyX265Bi5vtVA4jEaL/view?usp=share_link)
+### Testing samples: [Download from GoogleDrive](https://drive.google.com/drive/folders/1OPXJ3LjO7h49OoYZ7I0neuxYLjGO8A_-)
 The ZIP file contains three test datasets:
 - KAIST dataset: 200 image pairs
 - TNO dataset: 20 image pairs
